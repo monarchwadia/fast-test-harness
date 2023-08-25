@@ -18,9 +18,11 @@ export const thirdPartyABTester = async (page) => {
         handler = ((route) => {
             const { hostname } = new URL(route.request().url());
 
-            if (blacklist.includes(hostname)) {
+            if (THIRD_PARTY_DOMAIN_BLACKLIST.includes(hostname)) {
                 return route.abort();
             }
+
+            route.continue();
         })
     } else {
         handler = ((route) => route.continue())
@@ -33,9 +35,10 @@ export const thirdPartyABTester = async (page) => {
 
 /**
  * 
- * @param {{ timestamp: string, browserName: string, duration: number, areThirdPartyScriptsDisabled: boolean }} param
+ * @param {{ browserName: string, duration: number, areThirdPartyScriptsDisabled: boolean }} param
  */
-export const logEvent = ({ timestamp, browserName, duration, areThirdPartyScriptsDisabled: disableThirdPartyScripts }) => {
+export const logEvent = ({ browserName, duration, areThirdPartyScriptsDisabled: disableThirdPartyScripts }) => {
+    const timestamp = new Date().toISOString();
     const RESULT_FILE = path.join(__dirname, "..", "results.csv");
     fs.ensureFileSync(RESULT_FILE);
     fs.appendFileSync(RESULT_FILE, `${timestamp},${browserName},${duration},"${disableThirdPartyScripts ? "Disabled" : "Enabled"} 3rd party scripts"\n`);

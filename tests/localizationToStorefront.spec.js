@@ -11,9 +11,7 @@ test('localizationToStorefront', async ({ page, browser, browserName }, testInfo
     // });
 
     // set AB testing on third party scripts
-    const abTester = thirdPartyABTester();
-    const areThirdPartyScriptsDisabled = abTester.isDisabled;
-    await page.route("**/*", abTester.handler);
+    const { areThirdPartyScriptsDisabled } = await thirdPartyABTester(page);
 
     // Localize on spectrum.com
     await page.goto("https://spectrum.com");

@@ -10,21 +10,25 @@ const THIRD_PARTY_DOMAIN_BLACKLIST = [
     "googletagmanager.com", // unsure if working correctly
 ];
 
-export const thirdPartyABTester = () => {
+export const thirdPartyABTester = async (page) => {
     const isDisabled = process.env.AB_TEST_THIRD_PARTY === "true" ? Math.random() < 0.5 : false;
 
-    return {
-        isDisabled,
-        handler: isDisabled
-            ? ((route) => {
-                const { hostname } = new URL(route.request().url());
+    let handler;
+    if (isDisabled) {
+        handler = ((route) => {
+            const { hostname } = new URL(route.request().url());
 
-                if (blacklist.includes(hostname)) {
-                    return route.abort();
-                }
-            })
-            : (route) => route.continue()
+            if (blacklist.includes(hostname)) {
+                return route.abort();
+            }
+        })
+    } else {
+        handler = ((route) => route.continue())
     }
+
+    await page.route("**/*", handler);
+
+    return { areThirdPartyScriptsDisabled: isDisabled };
 }
 
 /**

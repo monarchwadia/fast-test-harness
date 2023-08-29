@@ -1,23 +1,13 @@
 // @ts-check
 import { thirdPartyABTester, ensureFastIsFinishedOnPage, getFastStateFromPage } from "./utils.mjs";
 
+// ====== TYPES ======
 /**
- * @typedef TravelOptions
+ * @typedef ScenarioManagerOptions
  * @property {boolean} waitForFastToFinish
  */
 
-/**
- * Applies defaults to the options
- * @param {Partial<TravelOptions>} [opts]
- * @returns {TravelOptions}
- */
-const applyDefaultOpts = (opts = {}) => {
-    const defaultOptions = {
-        waitForFastToFinish: true
-    }
-
-    return { ...defaultOptions, ...opts };
-}
+// ====== FUNCTIONS ======
 
 /**
  * 
@@ -33,22 +23,46 @@ const waitAndGetFastMetric = async (page) => {
     return { fast };
 }
 
+// ====== CLASSES ======
+
+/**
+ * This class contains scenarios that can be used to test the buyflow.
+ * It is used in both the CLI and the tests.
+ * 
+ * @example
+ * // travels to the storefront
+ * const sm = new ScenarioModel(page, options);
+ * await sm.travelToStorefront();
+ * @example
+ * // travels to the storefront, then stops on the Customize page
+ * const sm = new ScenarioModel(page, options);
+ * await sm.travelToCustomize();
+ */
 export class ScenarioModel {
-    constructor({ page }) {
-        /**
-         * @type {import("@playwright/test").Page}
-         */
+    page;
+    options;
+
+    /**
+     * 
+     * @param {import("@playwright/test").Page} page 
+     * @param {Partial<ScenarioManagerOptions>} [options]
+     */
+    constructor(page, options) {
+        options = options || {};
         this.page = page;
+
+        const DEFAULT_OPTIONS = {
+            waitForFastToFinish: true
+        }
+        this.options = { ...DEFAULT_OPTIONS, ...options };
     }
 
     /**
      * This scenario will localize, and then navigate to the storefront
-     * @param {Partial<TravelOptions>} [opts]
-     * @returns { Promise<{ fast: any }> } - The FAST state from the page
+     * @returns { Promise<{ fast: any }> } - The FAST state from the final page
      */
-    async travelToStorefront(opts) {
-        opts = applyDefaultOpts(opts);
-        const { page } = this;
+    async travelToStorefront() {
+        const { page, options } = this;
 
         // Localize on spectrum.com
         await page.goto("https://spectrum.com");
@@ -60,9 +74,8 @@ export class ScenarioModel {
         // wait for localization to complete and FAST to be finished
         await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/(featured|internet).*/);
 
-        if (opts.waitForFastToFinish) {
-            const result = await waitAndGetFastMetric(page);
-            return result;
+        if (options.waitForFastToFinish) {
+            return await waitAndGetFastMetric(page);
         } else {
             return { fast: null }
         }
@@ -70,19 +83,18 @@ export class ScenarioModel {
 
     /**
      * This scenario will localize, select the first feature offer, then stop on Customize.
-     * @param {Partial<TravelOptions>} [opts]
-     * @returns { Promise<{ fast: any }> } - The FAST state from the page
+     * @returns { Promise<{ fast: any }> } - The FAST state from the final page
      */
-    async travelToCustomize(opts) {
-        opts = applyDefaultOpts(opts);
-        const { page } = this;
-        await this.travelToStorefront(opts);
+    async travelToCustomize() {
+        const { page, options } = this;
+
+        await this.travelToStorefront();
 
         const addOfferBtn = await page.locator('.feature-offer').first().getByText("ADD OFFER");
         await addOfferBtn.click();
         await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/internet.*/);
 
-        if (opts.waitForFastToFinish) {
+        if (options.waitForFastToFinish) {
             return await waitAndGetFastMetric(page);
         } else {
             return { fast: null }
@@ -91,13 +103,12 @@ export class ScenarioModel {
 
     /**
      * This scenario will localize, customize, then stop on EYI.
-     * @param {Partial<TravelOptions>} [opts]
-     * @returns { Promise<{ fast: any }> } - The FAST state from the page
+     * @param {Partial<ScenarioManagerOptions>} [opts]
+     * @returns { Promise<{ fast: any }> } - The FAST state from the final page
      */
     async travelToEYI(opts) {
-        opts = applyDefaultOpts(opts);
-        const { page } = this;
-        await this.travelToCustomize(opts);
+        const { page, options } = this;
+        await this.travelToCustomize();
 
         await page.waitForSelector("#accordion-header-internet-equipment");
         await page.getByText("WiFi + FREE Modem").first().click();
@@ -105,7 +116,7 @@ export class ScenarioModel {
 
         await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/enter-your-information.*/);
 
-        if (opts.waitForFastToFinish) {
+        if (options.waitForFastToFinish) {
             return await waitAndGetFastMetric(page);
         } else {
             return { fast: null }

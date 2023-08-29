@@ -12,7 +12,7 @@ test('localizationToStorefront', async ({ page, browserName }) => {
     //     update: true, // flip to true to update the HAR file, false to not update
     // });
 
-    const scenarioModel = new ScenarioModel({ page });
+    const scenarioModel = new ScenarioModel(page);
     const { areThirdPartyScriptsDisabled } = await scenarioModel.enableThirdPartyScriptABTesting();
 
     const { fast } = await scenarioModel.travelToStorefront();
@@ -29,7 +29,7 @@ test('storefrontToCustomize', async ({ page, browserName }) => {
     //     update: true, // flip to true to update the HAR file, false to not update
     // });
 
-    const scenarioModel = new ScenarioModel({ page });
+    const scenarioModel = new ScenarioModel(page);
     const { areThirdPartyScriptsDisabled } = await scenarioModel.enableThirdPartyScriptABTesting();
 
     const { fast } = await scenarioModel.travelToCustomize();

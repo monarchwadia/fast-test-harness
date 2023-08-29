@@ -36,6 +36,9 @@ pnpm cli storefront
 
 # Localize and go to storefront, then navigate to customize
 pnpm cli customize
+
+# And the same for EYI
+pnpm cli eyi
 ```
 
 # FAQ

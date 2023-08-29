@@ -7,13 +7,12 @@ import { ScenarioModel } from '../tests/scenarios.mjs';
 const program = new Command();
 
 const createScenarioModel = async () => {
-    const browser = await chromium.launch({
-        headless: false
-    });
+    const browser = await chromium.launch({ headless: false });
     const page = await browser.newPage();
+    // disable timeouts for CLI commands
+    page.setDefaultTimeout(0);
 
     const sm = new ScenarioModel({ page })
-
     return sm;
 }
 

@@ -34,3 +34,17 @@ pnpm cli storefront
 # Localize and go to storefront, then navigate to customize
 pnpm cli customize
 ```
+
+# FAQ
+
+### Can I use npm?
+
+Yes. Let me know if you're using it heavily and I can gitignore a few things to make it more convenient for you.
+
+### I'm on a corporate laptop. Can I use this without local admin access?
+
+No. Playwright requires lower level things to be installed. But you can open up a ticket to request these things to be installed.
+
+### Why is this on Github?
+
+It's here temporarily. We can move to Bitbucket if there is demand. Otherwise, I will just use this codebase for my own testing purposes.

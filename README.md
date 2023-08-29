@@ -27,6 +27,8 @@ pnpm test --debug --ui
 
 ## Manual testing
 
+For all manual testing scenarios, the running will ignore FAST metrics.
+
 ```bash
 # CLI help output
 pnpm cli

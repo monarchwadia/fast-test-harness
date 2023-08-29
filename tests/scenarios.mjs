@@ -4,7 +4,9 @@ import { thirdPartyABTester, ensureFastIsFinishedOnPage, getFastStateFromPage } 
 // ====== TYPES ======
 /**
  * @typedef ScenarioManagerOptions
- * @property {boolean} waitForFastToFinish
+ * @property {boolean} collectFastOnStorefront
+ * @property {boolean} collectFastOnCustomize
+ * @property {boolean} collectFastOnEYI
  */
 
 // ====== FUNCTIONS ======
@@ -51,8 +53,11 @@ export class ScenarioModel {
         options = options || {};
         this.page = page;
 
+        /** @type {ScenarioManagerOptions} */
         const DEFAULT_OPTIONS = {
-            waitForFastToFinish: true
+            collectFastOnStorefront: false,
+            collectFastOnCustomize: false,
+            collectFastOnEYI: false
         }
         this.options = { ...DEFAULT_OPTIONS, ...options };
     }
@@ -74,7 +79,7 @@ export class ScenarioModel {
         // wait for localization to complete and FAST to be finished
         await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/(featured|internet).*/);
 
-        if (options.waitForFastToFinish) {
+        if (options.collectFastOnStorefront) {
             return await waitAndGetFastMetric(page);
         } else {
             return { fast: null }
@@ -94,7 +99,7 @@ export class ScenarioModel {
         await addOfferBtn.click();
         await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/internet.*/);
 
-        if (options.waitForFastToFinish) {
+        if (options.collectFastOnCustomize) {
             return await waitAndGetFastMetric(page);
         } else {
             return { fast: null }
@@ -116,7 +121,7 @@ export class ScenarioModel {
 
         await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/enter-your-information.*/);
 
-        if (options.waitForFastToFinish) {
+        if (options.collectFastOnEYI) {
             return await waitAndGetFastMetric(page);
         } else {
             return { fast: null }

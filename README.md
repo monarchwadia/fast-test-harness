@@ -46,7 +46,7 @@ Yes. Let me know if you're using it heavily and I can gitignore a few things to 
 
 ### I'm on a corporate laptop. Can I use this without local admin access?
 
-No. Playwright requires lower level things to be installed. But you can open up a ticket to request these things to be installed.
+Yes, but you will have an extra step. Playwright requires lower level things to be installed. You can open up a ticket to request these things to be installed.
 
 ### Why is this on Github?
 

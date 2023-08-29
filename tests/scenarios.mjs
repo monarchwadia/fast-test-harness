@@ -19,6 +19,18 @@ const applyDefaultOpts = (opts = {}) => {
     return { ...defaultOptions, ...opts };
 }
 
+/**
+ * 
+ * @param {import("@playwright/test").Page} page
+    * @returns {Promise<{ fast: any }>}
+ */
+const waitAndGetFastMetric = async (page) => {
+    await ensureFastIsFinishedOnPage(page);
+    // get the FAST state
+    const fast = await getFastStateFromPage(page);
+    return { fast };
+}
+
 export class ScenarioModel {
     constructor({ page }) {
         /**
@@ -45,12 +57,15 @@ export class ScenarioModel {
 
         // wait for localization to complete and FAST to be finished
         await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/(featured|internet).*/);
-        await ensureFastIsFinishedOnPage(page);
 
-        // get the FAST state
-        const fast = await getFastStateFromPage(page);
-
-        return { fast };
+        if (opts.waitForFastToFinish) {
+            console.log("Waiting for FAST to finish...");
+            const result = await waitAndGetFastMetric(page);
+            console.log("FAST finished.");
+            return result;
+        } else {
+            return { fast: null }
+        }
     }
 
     /**
@@ -66,10 +81,12 @@ export class ScenarioModel {
         const addOfferBtn = await page.locator('.feature-offer').first().getByText("ADD OFFER");
         await addOfferBtn.click();
         await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/internet.*/);
-        await ensureFastIsFinishedOnPage(page);
-        // get the FAST state
-        const fast = await getFastStateFromPage(page);
-        return { fast };
+
+        if (opts.waitForFastToFinish) {
+            return await waitAndGetFastMetric(page);
+        } else {
+            return { fast: null }
+        }
     }
 
     /**
@@ -82,17 +99,17 @@ export class ScenarioModel {
         const { page } = this;
         await this.travelToCustomize(opts);
 
-        const internetEquipmentCard = await page.locator("#accordion-header-internet-equipment").first();
-        const wiFiPlusFreeModemCard = await internetEquipmentCard.locator(".buyflow-offer-card").getByText("WiFi + FREE Modem").first();
-        await wiFiPlusFreeModemCard.click();
-        const checkoutButton = await wiFiPlusFreeModemCard.locator(".cmp-buyflow-button.btn-active").getByText("CHECKOUT").first();
-        await checkoutButton.click();
+        await page.waitForSelector("#accordion-header-internet-equipment");
+        await page.getByText("WiFi + FREE Modem").first().click();
+        await page.locator(".cmp-buyflow-button.btn-active").getByText("CHECKOUT").first().click();
 
         await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/enter-your-information.*/);
-        await ensureFastIsFinishedOnPage(page);
-        // get the FAST state
-        const fast = await getFastStateFromPage(page);
-        return { fast };
+
+        if (opts.waitForFastToFinish) {
+            return await waitAndGetFastMetric(page);
+        } else {
+            return { fast: null }
+        }
     }
 
     async enableThirdPartyScriptABTesting() {

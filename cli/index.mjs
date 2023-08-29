@@ -24,7 +24,7 @@ program.command('storefront')
     })
 
 program.command('customize')
-    .description('This command will open a Chromium browser, localize, navigate to the storefront, select a feature offer, then stop on the Customize page.')
+    .description('This command will open a Chromium browser, localize, select a feature offer, then stop on the Customize page.')
     .action(async () => {
         const sm = await createScenarioModel();
         sm.travelToCustomize();
@@ -34,7 +34,7 @@ program.command('eyi')
     .description('This command will open a Chromium browser, localize, select an offer, then stop on the EYI page.')
     .action(async () => {
         const sm = await createScenarioModel();
-        sm.travelToCustomize();
+        sm.travelToEYI();
     });
 
 

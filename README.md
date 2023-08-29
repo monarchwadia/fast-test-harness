@@ -1,34 +1,36 @@
 # FAST test harness
 
-This module uses Playwright and FAST to test localization timings on production Spectrum.com
+This module uses Playwright and FAST to test localization timings on production Spectrum.com. It also provides a convenient CLI tool that lets buyflow developers quickly travel to a number of different scenarios in the buyflow, to help with manual testing.
 
-Output is appended to the gitignored file `results.csv`
+It is under construction. It currently only works on spectrum.com, and always localizes with 6 Fiedler. 
 
-## Commands
+## Automated testing
+
+Output for each of these is appended to the gitignored file `results.csv`
 
 ```bash
-# Headless
-pnpm run test
+# Headless testing
+pnpm test
 
-# With UI
-pnpm run test --ui
+# Headless testing, 3 times for each test
+pnpm test --repeat-each=3
 
-# With debugger
-pnpm run test --debug
+# Headless testing, 3 times for each test, distributed across 3 workers
+pnpm test --repeat-each=3 --workers=3
 
-# With debugger and UI
-pnpm run test --debug --ui
+# Same as above, but with 3rd party scripts (Tealium, google ads, etc) disabled about 50% of the time
+AB_TEST_THIRD_PARTY=true pnpm test --repeat-each=3 --workers=3
+
+# Headful testing with a UI that you can click through and debug on
+pnpm test --debug --ui
 ```
 
-## Cases
-
-With third party enabled
-```bash
-pnpm run test --repeat-each=3 --workers=3
-```
-
-With third party disabled
+## Manual testing
 
 ```bash
-AB_TEST_THIRD_PARTY=true pnpm run test --repeat-each=3 --workers=3
+# Localize and go to storefront
+pnpm cli storefront
+
+# Localize and go to storefront, then navigate to customize
+pnpm cli customize
 ```

@@ -24,24 +24,31 @@ export const thirdPartyABTester = async (page) => {
 
             route.continue();
         })
-    } else {
-        handler = ((route) => route.continue())
-    }
 
-    await page.route("**/*", handler);
+        await page.route("**/*", handler);
+    }
 
     return { areThirdPartyScriptsDisabled: isDisabled };
 }
 
 /**
  * 
+ * @param {string} eventLabel
  * @param {{ browserName: string, duration: number, areThirdPartyScriptsDisabled: boolean }} param
  */
-export const logEvent = ({ browserName, duration, areThirdPartyScriptsDisabled: disableThirdPartyScripts }) => {
-    const timestamp = new Date().toISOString();
+export const logEvent = (eventLabel, { browserName, duration, areThirdPartyScriptsDisabled: disableThirdPartyScripts }) => {
     const RESULT_FILE = path.join(__dirname, "..", "results.csv");
     fs.ensureFileSync(RESULT_FILE);
-    fs.appendFileSync(RESULT_FILE, `${timestamp},${browserName},${duration},"${disableThirdPartyScripts ? "Disabled" : "Enabled"} 3rd party scripts"\n`);
+
+    // if file is empty, add headers
+    if (fs.readFileSync(RESULT_FILE).length === 0) {
+        const headers = `"Event Label","Timestamp","Browser","FAST Duration","3rd party scripts Enabled?"\n`;
+        fs.appendFileSync(RESULT_FILE, headers);
+    }
+
+    // write the event
+    const timestamp = new Date().toISOString();
+    fs.appendFileSync(RESULT_FILE, `"${eventLabel}","${timestamp}","${browserName}",${duration},"${disableThirdPartyScripts ? "No" : "Yes"}"\n`);
 }
 
 export const getFastStateFromPage = async (page) => await page.evaluate(() => window.reduxStore.getState().analytics.fast);

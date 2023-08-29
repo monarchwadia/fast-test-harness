@@ -1,7 +1,11 @@
 import { thirdPartyABTester, ensureFastIsFinishedOnPage, getFastStateFromPage } from "./utils";
 
+
 export class ScenarioModel {
     constructor({ page }) {
+        /**
+         * @type {import("@playwright/test").Page}
+         */
         this.page = page;
     }
 
@@ -22,6 +26,19 @@ export class ScenarioModel {
         // get the FAST state
         const fast = await getFastStateFromPage(page);
 
+        return { fast };
+    }
+
+    async storefrontToCustomizeScenario() {
+        const { page } = this;
+        await this.localizationToStorefrontScenario();
+
+        const addOfferBtn = await page.locator('.feature-offer').first().getByText("ADD OFFER");
+        await addOfferBtn.click();
+        await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/(internet).*/);
+        await ensureFastIsFinishedOnPage(page);
+        // get the FAST state
+        const fast = await getFastStateFromPage(page);
         return { fast };
     }
 

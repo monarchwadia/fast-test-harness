@@ -24,11 +24,11 @@ pnpm run test --debug --ui
 
 With third party enabled
 ```bash
-pnpm run test --repeat-each=3 --workers 3
+pnpm run test --repeat-each=3 --workers=3
 ```
 
 With third party disabled
 
 ```bash
-AB_TEST_THIRD_PARTY=true pnpm run test --repeat-each=3 --workers 3
+AB_TEST_THIRD_PARTY=true pnpm run test --repeat-each=3 --workers=3
 ```

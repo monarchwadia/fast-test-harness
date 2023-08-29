@@ -54,7 +54,7 @@ export class ScenarioModel {
     }
 
     /**
-     * This scenario will localize, navigate to the storefront, then select the first feature offer
+     * This scenario will localize, select the first feature offer, then stop on Customize.
      * @param {Partial<TravelOptions>} [opts]
      * @returns { Promise<{ fast: any }> } - The FAST state from the page
      */
@@ -65,7 +65,30 @@ export class ScenarioModel {
 
         const addOfferBtn = await page.locator('.feature-offer').first().getByText("ADD OFFER");
         await addOfferBtn.click();
-        await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/(internet).*/);
+        await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/internet.*/);
+        await ensureFastIsFinishedOnPage(page);
+        // get the FAST state
+        const fast = await getFastStateFromPage(page);
+        return { fast };
+    }
+
+    /**
+     * This scenario will localize, customize, then stop on EYI.
+     * @param {Partial<TravelOptions>} [opts]
+     * @returns { Promise<{ fast: any }> } - The FAST state from the page
+     */
+    async travelToEYI(opts) {
+        opts = applyDefaultOpts(opts);
+        const { page } = this;
+        await this.travelToCustomize(opts);
+
+        const internetEquipmentCard = await page.locator("#accordion-header-internet-equipment").first();
+        const wiFiPlusFreeModemCard = await internetEquipmentCard.locator(".buyflow-offer-card").getByText("WiFi + FREE Modem").first();
+        await wiFiPlusFreeModemCard.click();
+        const checkoutButton = await wiFiPlusFreeModemCard.locator(".cmp-buyflow-button.btn-active").getByText("CHECKOUT").first();
+        await checkoutButton.click();
+
+        await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/enter-your-information.*/);
         await ensureFastIsFinishedOnPage(page);
         // get the FAST state
         const fast = await getFastStateFromPage(page);

@@ -17,14 +17,21 @@ const createScenarioModel = async () => {
 }
 
 program.command('storefront')
-    .description('This command will open a Chromium browser, localize, and then navigate to the storefront')
+    .description('This command will open a Chromium browser, localize, then stop on the storefront')
     .action(async () => {
         const sm = await createScenarioModel();
         sm.travelToStorefront();
     })
 
 program.command('customize')
-    .description('This command will open a Chromium browser, localize, navigate to the storefront, then select the first feature offer')
+    .description('This command will open a Chromium browser, localize, navigate to the storefront, select a feature offer, then stop on the Customize page.')
+    .action(async () => {
+        const sm = await createScenarioModel();
+        sm.travelToCustomize();
+    });
+
+program.command('eyi')
+    .description('This command will open a Chromium browser, localize, select an offer, then stop on the EYI page.')
     .action(async () => {
         const sm = await createScenarioModel();
         sm.travelToCustomize();

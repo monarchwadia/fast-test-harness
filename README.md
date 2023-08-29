@@ -28,6 +28,9 @@ pnpm test --debug --ui
 ## Manual testing
 
 ```bash
+# CLI help output
+pnpm cli
+
 # Localize and go to storefront
 pnpm cli storefront
 

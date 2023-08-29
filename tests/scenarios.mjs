@@ -25,9 +25,11 @@ const applyDefaultOpts = (opts = {}) => {
     * @returns {Promise<{ fast: any }>}
  */
 const waitAndGetFastMetric = async (page) => {
+    console.log("Waiting for FAST [STARTED]");
     await ensureFastIsFinishedOnPage(page);
     // get the FAST state
     const fast = await getFastStateFromPage(page);
+    console.log("Waiting for FAST [FINISHED]");
     return { fast };
 }
 
@@ -59,9 +61,7 @@ export class ScenarioModel {
         await page.waitForURL(/https\:\/\/www.spectrum.com\/buy\/(featured|internet).*/);
 
         if (opts.waitForFastToFinish) {
-            console.log("Waiting for FAST to finish...");
             const result = await waitAndGetFastMetric(page);
-            console.log("FAST finished.");
             return result;
         } else {
             return { fast: null }

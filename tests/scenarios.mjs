@@ -123,7 +123,7 @@ export class ScenarioModel {
         }
     }
 
-    async enableThirdPartyScriptABTesting() {
+    async enableThirdPartyScriptABTestingIfAllowed() {
         return await thirdPartyABTester(this.page)
     }
 }

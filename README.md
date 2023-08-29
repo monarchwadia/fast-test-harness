@@ -51,3 +51,7 @@ Yes, but you will have an extra step. Playwright requires lower level things to 
 ### Why is this on Github?
 
 It's here temporarily. We can move to Bitbucket if there is demand. Otherwise, I will just use this codebase for my own testing purposes.
+
+### Can I use this on my local machine?
+
+I can modify the script to accommodate this, if there is demand.

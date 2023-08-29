@@ -42,7 +42,7 @@ test('storefrontToCustomize', async ({ page, browserName }) => {
     logEvent("storefrontToCustomize", { browserName, duration, areThirdPartyScriptsDisabled });
 })
 
-test('storefrontToEYI', async ({ page, browserName }) => {
+test('customizeToEYI', async ({ page, browserName }) => {
 
     // Get the response from the HAR file
     // await page.routeFromHAR('./harfile/session.har', {
@@ -58,5 +58,5 @@ test('storefrontToEYI', async ({ page, browserName }) => {
     const { fast } = await scenarioModel.travelToEYI();
     const duration = fast.duration;
 
-    logEvent("storefrontToCustomize", { browserName, duration, areThirdPartyScriptsDisabled });
+    logEvent("customizeToEYI", { browserName, duration, areThirdPartyScriptsDisabled });
 })

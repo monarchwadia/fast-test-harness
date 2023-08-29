@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "cli": "node cli/index.js",
+    "cli": "node cli/index.mjs",
     "test": "playwright test ."
   },
   "keywords": [],

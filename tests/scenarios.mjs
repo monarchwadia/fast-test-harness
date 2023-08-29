@@ -1,5 +1,23 @@
-import { thirdPartyABTester, ensureFastIsFinishedOnPage, getFastStateFromPage } from "./utils";
+// @ts-check
+import { thirdPartyABTester, ensureFastIsFinishedOnPage, getFastStateFromPage } from "./utils.mjs";
 
+/**
+ * @typedef TravelOptions
+ * @property {boolean} waitForFastToFinish
+ */
+
+/**
+ * Applies defaults to the options
+ * @param {Partial<TravelOptions>} [opts]
+ * @returns {TravelOptions}
+ */
+const applyDefaultOpts = (opts = {}) => {
+    const defaultOptions = {
+        waitForFastToFinish: true
+    }
+
+    return { ...defaultOptions, ...opts };
+}
 
 export class ScenarioModel {
     constructor({ page }) {
@@ -9,7 +27,13 @@ export class ScenarioModel {
         this.page = page;
     }
 
-    async localizationToStorefrontScenario() {
+    /**
+     * This scenario will localize, and then navigate to the storefront
+     * @param {Partial<TravelOptions>} [opts]
+     * @returns { Promise<{ fast: any }> } - The FAST state from the page
+     */
+    async travelToStorefront(opts) {
+        opts = applyDefaultOpts(opts);
         const { page } = this;
 
         // Localize on spectrum.com
@@ -29,9 +53,15 @@ export class ScenarioModel {
         return { fast };
     }
 
-    async storefrontToCustomizeScenario() {
+    /**
+     * This scenario will localize, navigate to the storefront, then select the first feature offer
+     * @param {Partial<TravelOptions>} [opts]
+     * @returns { Promise<{ fast: any }> } - The FAST state from the page
+     */
+    async travelToCustomize(opts) {
+        opts = applyDefaultOpts(opts);
         const { page } = this;
-        await this.localizationToStorefrontScenario();
+        await this.travelToStorefront(opts);
 
         const addOfferBtn = await page.locator('.feature-offer').first().getByText("ADD OFFER");
         await addOfferBtn.click();

@@ -1,8 +1,8 @@
 // @ts-check
 
 import { test } from '@playwright/test';
-import { ensureFastIsFinishedOnPage, getFastStateFromPage, logEvent, thirdPartyABTester } from './utils';
-import { ScenarioModel } from './scenarios';
+import { ensureFastIsFinishedOnPage, getFastStateFromPage, logEvent, thirdPartyABTester } from './utils.mjs';
+import { ScenarioModel } from './scenarios.mjs';
 
 test('localizationToStorefront', async ({ page, browserName }) => {
 
@@ -15,7 +15,7 @@ test('localizationToStorefront', async ({ page, browserName }) => {
     const scenarioModel = new ScenarioModel({ page });
     const { areThirdPartyScriptsDisabled } = await scenarioModel.enableThirdPartyScriptABTesting();
 
-    const { fast } = await scenarioModel.localizationToStorefrontScenario();
+    const { fast } = await scenarioModel.travelToStorefront();
     const duration = fast.duration;
 
     logEvent("localizationToStorefront", { browserName, duration, areThirdPartyScriptsDisabled });
@@ -32,7 +32,7 @@ test('storefrontToCustomize', async ({ page, browserName }) => {
     const scenarioModel = new ScenarioModel({ page });
     const { areThirdPartyScriptsDisabled } = await scenarioModel.enableThirdPartyScriptABTesting();
 
-    const { fast } = await scenarioModel.storefrontToCustomizeScenario();
+    const { fast } = await scenarioModel.travelToCustomize();
     const duration = fast.duration;
 
     logEvent("storefrontToCustomize", { browserName, duration, areThirdPartyScriptsDisabled });
